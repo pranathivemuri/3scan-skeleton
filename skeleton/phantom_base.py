@@ -1,8 +1,7 @@
 import numbers
+import warnings
+
 import numpy as np
-
-import kesm.base
-
 
 """
 Pixel coordinate conversion
@@ -111,7 +110,7 @@ def scale_radius_to_pixelcoord(radius: float, shape: tuple):
     Scale the cylinder radius from base space [-1, 1] to pixel space
     We scale by the minimum of the XY dimension, as in `scale_radius_to_basecoord`
     """
-    kesm.base.assert_gt(radius, 0.0, fmt="Radius must be positive, given {0}")
+    assert radius > 0.0, "Radius must be positive, given {}".format(radius)
     return int(np.round((radius * min(shape[:2])) / 2))
 
 
@@ -191,9 +190,7 @@ def trace_function(xyzr_callable,
 
         nd_spacing = 1.0 / min(shape)
         if r < nd_spacing:
-            kesm.base.warning(
-                "Radius of phantom is approaching grid rez. {} v. {}",
-                r, nd_spacing)
+            warnings.warn("Radius of phantom is approaching grid rez. {} v. {}".format(r, nd_spacing))
         output[mask] = 255
 
     return output
@@ -346,19 +343,18 @@ def cylinder(shape,
     Returns:
         ndarray, boolean, shape=`shape`
 
-    Displays kesm.base.warning if radius is close to grid resolution
-    Displays kesm.base.warning if radius is larger than the volume grid (>2)
+    Displays warnings.warn if radius is close to grid resolution
+    Displays warnings.warn if radius is larger than the volume grid (>2)
     Raises AssertionError if cap is not in base.CAP_TYPES
     """
     assert cap in CAP_TYPES
     nd_spacing = 1.0 / min(shape)
     if r < nd_spacing:
-        kesm.base.warning(
-            "Radius of phantom is approaching grid rez. {} v. {}",
-            r, nd_spacing)
+        warnings.warn(
+            "Radius of phantom is approaching grid rez. {} v. {}".format(r, nd_spacing))
     if r >= 2:
-        kesm.base.warning(
-            "Radius of cylinder is larger than the base volume: {} >= 2", r)
+        warnings.warn(
+            "Radius of cylinder is larger than the base volume: {} >= 2".format(r))
     # allocate the output array
     output = np.zeros(shape, dtype=bool)
 

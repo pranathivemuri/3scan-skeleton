@@ -238,10 +238,6 @@ def module_dir(*, depth=1):
     """
     What is the source directory of the calling module?
     'depth' - how far up the call stack to search for the module.
-    Ex: foo/kesm/bar/baz.py
-    >>> import kesm.base
-    >>> kesm.base.module_dir()
-    'foo/kesm/bar'
     """
     filename = inspect.stack()[depth][1]
     return os.path.dirname(filename)

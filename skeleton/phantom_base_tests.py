@@ -2,7 +2,6 @@ import nose.tools
 import numpy as np
 
 import skeleton.phantom_base as phantom_base
-import kesm.math.statistics as kstats
 
 
 def test_normalized_L2():
@@ -325,7 +324,7 @@ def _find_diameter(arr):
 
     See kesm.math.statistics.nonzero_bounds for more info
     """
-    bounds = kstats.nonzero_bounds(arr)
+    bounds = phantom_base.nonzero_bounds(arr)
     return bounds[1] - bounds[0]
 
 
@@ -487,7 +486,7 @@ def test_cylinder_xyz_flatcap():
     # make sure we have flattened at the edge of the cylinder
     # get the diagonal line through the cylinder, then check bounds
     line = np.array([volume[x, x, x] for x in range(shape[0])])
-    nose.tools.assert_equal(kstats.nonzero_bounds(line),
+    nose.tools.assert_equal(phantom_base.nonzero_bounds(line),
                             (quarter[0], shape[0] - quarter[0]))
 
 
