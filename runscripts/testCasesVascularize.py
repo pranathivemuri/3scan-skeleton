@@ -18,11 +18,11 @@ def cylinder(size, xi, yi, r):
 
 
 def makeThreebars():
-    c = cylinder((50,50,50), 0.5, 0.5, 1.0 / 6)
+    c = cylinder((50, 50, 50), 0.5, 0.5, 1.0 / 6)
     n = c.copy()
 
-    n = np.logical_or(n, np.transpose(c, [2,1,0])[:,::-1,:])
-    n = np.logical_or(n, np.transpose(c, [0,2,1])[::-1,:,::-1])
+    n = np.logical_or(n, np.transpose(c, [2, 1, 0])[:, ::-1, :])
+    n = np.logical_or(n, np.transpose(c, [0, 2, 1])[::-1, :, ::-1])
     return n
 
 
@@ -34,7 +34,7 @@ def makePoint(size, xi, yi, zi, r):
     return 1 * (np.sqrt((x - xi)**2 + (y - yi)**2 + (z - zi)**2) < r)
 
 
-def traceFunction(xf, yf, zf, tBracket, nSteps, radaii, shape=(100,100,100)):
+def traceFunction(xf, yf, zf, tBracket, nSteps, radaii, shape=(100, 100, 100)):
     # Compute the time offsets
     tMin, tMax = tBracket
     ts = np.linspace(tMin, tMax, nSteps)
@@ -92,7 +92,7 @@ def doLineSegment(xyz1, xyz2, shape=(100,100,100), spacing=1.0 / 50):
     s = np.zeros(shape, dtype=np.uint8)
     # Compute a sphere at each point and
     for xp, yp, zp in zip(xs, ys, zs):
-        s = np.logical_or(s, makePoint((100,100,100), xp, yp, zp, spacing * 2))
+        s = np.logical_or(s, makePoint((100, 100, 100), xp, yp, zp, spacing * 2))
 
     return s
 
@@ -112,7 +112,7 @@ def voronoiVessels(nPoints=10):
     # Set of already traced edges (2x speedup)
     tracedEdges = set()
 
-    solid = np.zeros((100,100,100), dtype=np.uint8)
+    solid = np.zeros((100, 100, 100), dtype=np.uint8)
     # Go throrough the tetrahedra
     for n, tet in enumerate(dt.vertices):
         print(n, dt.vertices.shape)
@@ -129,8 +129,8 @@ def voronoiVessels(nPoints=10):
 
             # Dereference the points of interest
             idx1, idx2 = eList
-            pt1 = xyz[idx1,:]
-            pt2 = xyz[idx2,:]
+            pt1 = xyz[idx1, :]
+            pt2 = xyz[idx2, :]
 
             # Trace the line onto our list
             solid |= doLineSegment(pt1, pt2)

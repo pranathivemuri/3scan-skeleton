@@ -346,3 +346,33 @@ def list_of_tuples_of_val(arr, value=0):
         list of tuples at which arr is equal to value
     """
     return list(map(tuple, np.transpose(np.where(arr == value))))
+
+
+def gaussian_blur_2d(image: np.array, kernel_size: int=5):
+    """
+    Apply a (kernel_size, kernel_size) 2D Gaussian filter to input image
+    Computes the gaussian sigma from the kernel_size
+    This is a thin wrapper around cv2.GaussianBlur()
+
+    :param image: np.ndarray, 2D image with 1 or 3 channels
+    :return np.ndarray:
+
+    :raises AssertionError: if kernel_size is not odd-numbered
+    """
+    assert kernel_size > 0
+    assert kernel_size % 2 != 0
+    return cv2.GaussianBlur(image, (kernel_size, kernel_size), 0)
+
+
+def round_float_uint8(arr: np.array):
+    """
+    Given an array of any data type (often floating point),
+    condition the data to fit in a uint8 by:
+    - Rounding it to the nearest integer
+    - Clipping values below 0 to 0
+    - Clipping values above 255 to 255
+    - Casting it to np.uint8
+
+    :return np.array: same shape as original shape, dtype=np.uint8
+    """
+    return arr.round().clip(0, 255).astype(np.uint8)

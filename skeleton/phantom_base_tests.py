@@ -322,7 +322,6 @@ def _find_diameter(arr):
     Input:
         arr - ndarray 1d, containing zeros and nonzero values
 
-    See kesm.math.statistics.nonzero_bounds for more info
     """
     bounds = phantom_base.nonzero_bounds(arr)
     return bounds[1] - bounds[0]

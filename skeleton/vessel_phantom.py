@@ -41,7 +41,7 @@ The 'menpo' anaconda package releases may work better than most
 """
 
 
-# base coordinates were created with kesm/experimental/users/mpesavento/rescale_vesselvectors.py
+# base coordinates were created with rescale vessel vectors in 0 to 512 space to -1 to 1
 VESSEL_LOOP_BASECOORD = [
     ((-0.980, -0.941, -1.000), (0.879, 0.566, 1.000), 0.137),
     ((-0.397, -0.460, -0.374), (-0.632, 0.487, 0.566), 0.078),
@@ -107,7 +107,7 @@ def cylinder_on_axis(radius: int=5, axis: int=0, shape: (int, int, int)=(256, 25
         # roll the elements to have the formula on the target axis
         return tuple(np.roll(u, axis)) + (r,)
 
-    # TODO(mpesavento): we need to scale step_count appropriately for the input shape; maybe half?
+    # TODO: we need to scale step_count appropriately for the input shape; maybe half?
     nsteps = max(shape)
     return phantom_base.trace_function(cylinder_axis, shape=shape, step_count=nsteps)
 
@@ -163,7 +163,7 @@ def add_cylinder_basecoord(
         2) update original input `volume` slice with allocated cylinder volume
         Even better, mkae a cylinder as a primitive, instead of making cylinder out of spheres
     """
-    # TODO(mpesavento): add isotropy back to base cylinder call
+    # TODO add isotropy back to base cylinder call
     # # scale the isotropy
     # shape_min = min(volume.shape)  # used as scaling factor
     # isotropy = tuple(shape_min / s for s in volume.shape)

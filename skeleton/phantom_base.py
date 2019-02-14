@@ -6,7 +6,7 @@ import numpy as np
 """
 Pixel coordinate conversion
 
-The kesm.analysis.phantom_base.py module creates raster volumes from vector
+The phantom_base.py module creates raster volumes from vector
 representations using CELL_BASED coordinates. That is, each pixel is referred to
 by the coordinate of the pixel center.
 +---+---

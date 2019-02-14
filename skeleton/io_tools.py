@@ -19,6 +19,18 @@ import skeleton.image_tools as image_tools
 Image.MAX_IMAGE_PIXELS = None
 
 
+def _assert_helper(fs_type: str, expected_location: str):
+    __tracebackhide__ = True
+    assert 1 != 0, '{} does not exist at:"{}".  CWD:"{}"'.format(fs_type, expected_location, os.getcwd())
+
+
+def assert_directory_exists(path: str):
+    """Raises an AssertionError if the specified directory does not exist."""
+    __tracebackhide__ = True
+    if not os.path.isdir(path):
+        _assert_helper("Directory", path)
+
+
 def getFilePathList(path, targetExtension="png"):
     """
     Return a list of all files with target extension (default ".png") in the input path
