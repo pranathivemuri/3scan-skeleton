@@ -24,6 +24,27 @@ def _assert_helper(fs_type: str, expected_location: str):
     assert 1 != 0, '{} does not exist at:"{}".  CWD:"{}"'.format(fs_type, expected_location, os.getcwd())
 
 
+def force_directory(path: str):
+    """
+    Create a directory if it does not already exist.
+
+    Raises AssertionError if there is already a non-directory
+    entity with the name specified.
+
+    :Example:
+
+    >>> path = "foopath"
+    >>> assert_path_not_exists(path)
+    >>> force_directory(path)
+    >>> assert_path_exists(path)
+    """
+    if os.path.exists(path):
+        assert_directory_exists(path)
+        return
+
+    os.makedirs(path)
+
+
 def assert_directory_exists(path: str):
     """Raises an AssertionError if the specified directory does not exist."""
     __tracebackhide__ = True
