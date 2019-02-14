@@ -119,7 +119,7 @@ def blur_volume(
     if out is None:
         out = np.empty_like(stack)
     else:
-        np.testing.assert_array_equals(out.shape, stack.shape)
+        np.testing.assert_array_equal(out.shape, stack.shape)
     for i in range(stack.shape[2]):
         out[:, :, i] = image_tools.gaussian_blur_2d(stack[:, :, i], sigma)
     return out

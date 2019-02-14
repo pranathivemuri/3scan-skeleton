@@ -4,7 +4,7 @@ import time
 import networkx as nx
 
 import skeletonization.skeleton.networkx_graph_from_array as networkx_graph_from_array
-import metrics.vessel_segment_stats as vessel_stats
+import skeletonization.metrics.vessel_segment_stats as vessel_stats
 
 """
 Find the statistics of a networkx graphical representation of skeleton
@@ -22,8 +22,7 @@ class SkeletonStats:
     """
     Find statistics on a networkx graph of a skeleton where every voxel in a 3D skeleton is a node
 
-    :param coordinate_bitmask_lists - list of two element lists,
-        [[non_zero_coordinate, bitmask_config_number or any second element], [..]]
+    :param arr - 3D Skeleton array
     :param voxel_size - tuple
         param representing a tuple of the voxel size in x, y, and z in um
     :param arr_lower_limits: lower limits for array
@@ -40,16 +39,10 @@ class SkeletonStats:
         v followed by x, y, z coordinates
         l followed by indexes to the nodes that form the segment path
     """
-    def __init__(
-        self,
-        coordinate_bitmask_lists: list,
-        arr_lower_limits: tuple,
-        arr_upper_limits: tuple,
-        voxel_size: tuple=(1, 1, 1),
-        cutoff: int=0):
+    def __init__(self, arr, arr_lower_limits=None, arr_upper_limits=None, voxel_size: tuple=(1, 1, 1), cutoff: int=0):
 
         networkx_graph = networkx_graph_from_array.get_networkx_graph_from_array(
-            coordinate_bitmask_lists,
+            arr,
             arr_lower_limits,
             arr_upper_limits)
 
@@ -57,7 +50,7 @@ class SkeletonStats:
         self.vox_dim = voxel_size
         self.cutoff = cutoff
         self.correct_branch_nodes = []
-        print("cutoff is {}", cutoff)
+        print("cutoff is {}".format(cutoff))
 
     def _set_vessel_segment_stats(self, path: list):
         """

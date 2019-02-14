@@ -8,9 +8,9 @@ script:
   # command to lint code
   - flake8 --config .flake8
   # command to generation skeleton extension
-  - python3 skeletonization/setup_cython.py build_ext --inplace
+  - python3 setup_cython.py build_ext --inplace
   # Command to run documentation on python
-  - python3 skeletonization/run_sphinx_documentation --output_folder=build/docs/pythondoc
+  - python3 run_sphinx_documentation.py --output_folder=build/docs/pythondoc
   # command to run tests
   - nosetests --with-coverage --cover-erase --cover-package=skeletonization --cover-html
 

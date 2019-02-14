@@ -2,7 +2,8 @@ import os
 import shutil
 import tempfile
 
-from runscripts.objWrite import getObjBranchPointsWrite, getObjPointsWrite
+import skeletonization.skeleton.networkx_graph_from_array as networkx_graph_from_array
+from skeletonization.runscripts.objWrite import getObjBranchPointsWrite, getObjPointsWrite
 from skeletonization.skeleton.skeleton_testlib import (
     get_cycles_with_branches_protrude, get_single_voxel_lineNobranches,
     get_cycle_no_tree, get_disjoint_trees_no_cycle_3d)
@@ -35,7 +36,7 @@ def _getLinePrefixes(graph, path):
 
 def test_singleSegment():
     # Test 1 Prefixes of v for a single segment
-    lineGraph = get_single_voxel_lineNobranches()
+    lineGraph = networkx_graph_from_array.get_networkx_graph_from_array(get_single_voxel_lineNobranches())
     vertices = lineGraph.number_of_nodes()
     branchPoints = 0
     verticesList = _getLinePrefixes(lineGraph, "Line.obj")
@@ -45,7 +46,7 @@ def test_singleSegment():
 
 def test_singleCycle():
     # Test 2 Prefixes of v for a single cycle
-    donutGraph = get_cycle_no_tree()
+    donutGraph = networkx_graph_from_array.get_networkx_graph_from_array(get_cycle_no_tree())
     vertices = donutGraph.number_of_nodes()
     branchPoints = 0
     verticesListCycle = _getLinePrefixes(donutGraph, "OneCycle.obj")
@@ -55,7 +56,7 @@ def test_singleCycle():
 
 def test_cycleAndTree():
     # Test 3 Prefixes of v for a cyclic tree
-    sampleGraph = get_cycles_with_branches_protrude()
+    sampleGraph = networkx_graph_from_array.get_networkx_graph_from_array(get_cycles_with_branches_protrude())
     vertices = sampleGraph.number_of_nodes()
     branchPoints = 2
     verticesListCyclicTree = _getLinePrefixes(sampleGraph, "CycleAndTree.obj")
@@ -65,7 +66,7 @@ def test_cycleAndTree():
 
 def test_treeNoCycle3d():
     # Test 4 Prefixes of v for a tree
-    crosPairgraph = get_disjoint_trees_no_cycle_3d()
+    crosPairgraph = networkx_graph_from_array.get_networkx_graph_from_array(get_disjoint_trees_no_cycle_3d())
     vertices = crosPairgraph.number_of_nodes()
     branchPoints = 2
     verticesListCrosses = _getLinePrefixes(crosPairgraph, "Tree.obj")

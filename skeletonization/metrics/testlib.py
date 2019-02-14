@@ -80,7 +80,3 @@ def get_tiny_loops_with_branches():
     tiny_loops_with_branches = np.zeros((3, 10, 10), dtype=bool)
     tiny_loops_with_branches[1] = tiny_loop
     return tiny_loops_with_branches
-
-
-def sum_of_powers(*args):
-    return sum(2 ** power for power in args)

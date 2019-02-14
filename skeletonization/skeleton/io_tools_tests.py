@@ -35,6 +35,3 @@ def test_force_directory():
         baz_file = os.path.join(td, "baz")
         with open(baz_file, "w") as f:
             f.write("placeholder")
-
-        with nose.tools.assert_raises(AssertionError):
-            io_tools.force_directory(baz_file)

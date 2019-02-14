@@ -1,51 +1,80 @@
+import networkx as nx
 import nose.tools
 import numpy as np
-import networkx as nx
-from skimage.morphology import skeletonize
 
-from skeletonization.skeleton.networkx_graph_from_array import get_networkx_graph_from_array
+import skeletonization.skeleton.networkx_graph_from_array as networkx_graph_from_array
+import skeletonization.skeleton.skeleton_testlib as skeleton_testlib
 
 
-def _helper_networkx_graph(sample_image, expected_edges, expected_disjoint_graphs):
-    networkx_graph = get_networkx_graph_from_array(sample_image)
+def _helper_networkx_graph(networkx_graph_array, expected_edges):
+    networkx_graph = networkx_graph_from_array.get_networkx_graph_from_array(networkx_graph_array)
     obtained_edges = networkx_graph.number_of_edges()
-    obtained_disjoint_graphs = len(list(nx.connected_component_subgraphs(networkx_graph)))
     nose.tools.assert_greater_equal(obtained_edges, expected_edges)
-    nose.tools.assert_equal(expected_disjoint_graphs, obtained_disjoint_graphs)
 
 
-def test_tiny_loop_with_branches(size=(10, 10)):
+def test_tiny_loop_with_branches():
     # a loop and a branches coming at end of the cycle
-    frame = np.zeros(size, dtype=np.uint8)
-    frame[2:-2, 2:-2] = 1
-    frame[4:-4, 4:-4] = 0
-    frame = skeletonize(frame)
-    frame[1, 5] = 1
-    frame[7, 5] = 1
-    sample_image = np.zeros((3, 10, 10), dtype=np.uint8)
-    sample_image[1] = frame
-    _helper_networkx_graph(sample_image, 10, 1)
+    _helper_networkx_graph(skeleton_testlib.get_tiny_loop_with_branches(), 10)
 
 
-def test_disjoint_crosses(size=(10, 10, 10)):
+def test_disjoint_crosses():
     # two disjoint crosses
-    cross_pair = np.zeros(size, dtype=np.uint8)
-    cross = np.zeros((5, 5), dtype=np.uint8)
-    cross[:, 2] = 1
-    cross[2, :] = 1
-    cross_pair[0, 0:5, 0:5] = cross
-    cross_pair[5, 5:10, 5:10] = cross
-    _helper_networkx_graph(cross_pair, 16, 2)
+    _helper_networkx_graph(skeleton_testlib.get_disjoint_trees_no_cycle_3d(), 16)
 
 
-def test_single_voxel_line(size=(5, 5, 5)):
-    sample_line = np.zeros(size, dtype=np.uint8)
-    sample_line[1, :, 4] = 1
-    _helper_networkx_graph(sample_line, 4, 1)
+def test_single_voxel_line():
+    _helper_networkx_graph(skeleton_testlib.get_single_voxel_line(), 4)
 
 
-def test_special_case_graph():
-    special_case_array = np.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],
-                                  [[0, 0, 0], [0, 1, 0], [0, 0, 0]],
-                                  [[0, 1, 0], [0, 0, 1], [0, 0, 0]]], dtype=bool)
-    _helper_networkx_graph(special_case_array, 2, 1)
+def test_get_position_vectors():
+    expected_cases = [[1, 0], [1, 0], [2**25, 25]]
+    for input_args, result in expected_cases:
+        nose.tools.assert_true(networkx_graph_from_array._get_position_vectors(input_args)[result])
+
+
+def test_get_cliques_of_size():
+    networkx_graph_with_cliques = nx.diamond_graph()
+    nose.tools.assert_equal(len(networkx_graph_from_array._get_cliques_of_size(
+        networkx_graph_with_cliques, 3)), 2)
+
+
+def test_remove_clique_edges():
+    networkx_graph_with_cliques = nx.diamond_graph()
+    edges_before = networkx_graph_with_cliques.number_of_edges()
+    networkx_graph_from_array._remove_clique_edges(networkx_graph_with_cliques)
+    nose.tools.assert_equal(networkx_graph_with_cliques.number_of_edges(), edges_before)
+
+
+def test_do_not_remove_clique_edges_not_one_pixel_apart():
+    networkx_graph_with_cliques = nx.Graph()
+    edges = [(0, 3), (0, 4), (3, 4)]
+    edges_before = len(edges)
+    networkx_graph_with_cliques.add_edges_from(edges)
+    networkx_graph_from_array._remove_clique_edges(networkx_graph_with_cliques)
+    nose.tools.assert_equal(networkx_graph_with_cliques.number_of_edges(), edges_before)
+
+
+def test_remove_clique_edges_one_pixel_apart():
+    networkx_graph_with_cliques = nx.Graph()
+    edges = [((2, 2, 2), (2, 2, 1)), ((2, 2, 2), (2, 1, 2)), ((2, 2, 1), (2, 1, 2))]
+    networkx_graph_with_cliques.add_edges_from(edges)
+    networkx_graph_from_array._remove_clique_edges(networkx_graph_with_cliques)
+    nose.tools.assert_equal(networkx_graph_with_cliques.number_of_edges(), 2)
+
+
+def test_remove_clique_edges_sqrt2_pixel_apart():
+    networkx_graph_with_cliques = nx.Graph()
+    edges = [
+        ((0, 0, 0), (1, 0, 1)), ((0, 0, 0), (1, 1, 0)), ((1, 0, 1), (1, 1, 0)),
+        ((3, 3, 3), (4, 3, 4)), ((3, 3, 3), (4, 4, 3)), ((4, 3, 4), (4, 4, 3))]
+    networkx_graph_with_cliques.add_edges_from(edges)
+    networkx_graph_from_array._remove_clique_edges(networkx_graph_with_cliques)
+    nose.tools.assert_equal(networkx_graph_with_cliques.number_of_edges(), 4)
+
+
+def test_empty_array():
+    _helper_networkx_graph(np.zeros((10, 10, 1), dtype=bool), 0)
+
+
+def test_all_one_array():
+    _helper_networkx_graph(np.ones((10, 10, 1), dtype=bool), 0)

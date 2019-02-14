@@ -1,7 +1,7 @@
 import nose.tools
 import numpy as np
 
-import skeletonization.skeleton.phantom.noise as phantom_noise
+import skeletonization.skeleton.phantom_noise as phantom_noise
 
 
 def test_scale_binarymask_update():
@@ -66,9 +66,6 @@ def test_add_speckle():
     np.testing.assert_array_equal(noisy.min(), 120)
     np.testing.assert_array_equal(noisy.max(), 133)
     np.testing.assert_array_equal(noisy.mean(), 126.72499999999999)
-
-    with nose.tools.assert_raises(AssertionError):
-        phantom_noise.add_speckle(np.ones((2, 2, 2)))
 
     with nose.tools.assert_raises(AssertionError):
         phantom_noise.add_speckle(np.ones((2, 2, 2), dtype=np.uint8), sigma=2)

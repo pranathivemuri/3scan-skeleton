@@ -6,6 +6,7 @@ from skimage.morphology import skeletonize
 import pyximport; pyximport.install() # NOQA
 import skeletonization.skeleton.thinning as thinning
 
+
 """
 Thinning algorithm as described in
 A Parallel 3D 12-Subiteration Thinning Algorithm Kálmán Palágyi,Graphical Models and Image Processing

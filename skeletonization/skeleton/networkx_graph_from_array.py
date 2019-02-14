@@ -2,9 +2,9 @@ import itertools
 
 import numpy as np
 import networkx as nx
+
 from scipy import ndimage
 
-import skeletonization.skeleton.image_tools as image_tools
 
 """
 program to look up adjacent elements and calculate degree
@@ -24,26 +24,28 @@ at origin (0, 0, 0)
 (1 -1 0)  (1 0 0)  (1 1 0)
 (1 -1 1)  (1 0 1)  (1 1 1)
 """
-TEMPLATE = np.array([[[33554432, 16777216, 8388608], [4194304, 2097152, 1048576], [524288, 262144, 131072]],
-                    [[65536, 32768, 16384], [8192, 0, 4096], [2048, 1024, 512]],
-                    [[256, 128, 64], [32, 16, 8], [4, 2, 1]]], dtype=np.uint64)
+TEMPLATE_3D = np.array([[[33554432, 16777216, 8388608], [4194304, 2097152, 1048576], [524288, 262144, 131072]],
+                        [[65536, 32768, 16384], [8192, 0, 4096], [2048, 1024, 512]],
+                        [[256, 128, 64], [32, 16, 8], [4, 2, 1]]], dtype=np.uint64)
 
 
 # permutations of (-1, 0, 1) in three/two dimensional tuple format
 # representing 8 and 26 increments around a pixel at origin (0, 0, 0)
 # 2nd ordered neighborhood around a voxel/pixel
-POSITION_VECTORS = list(itertools.product((-1, 0, 1), repeat=3))
-POSITION_VECTORS.remove((0, 0, 0))
+LIST_POSITION_VECTORS3D = list(itertools.product((-1, 0, 1), repeat=3))
+LIST_POSITION_VECTORS3D.remove((0, 0, 0))
 
 
-def _get_position_vectors(config_number: int):
+def _get_position_vectors(config_number):
     """
-    Return a list of tuples of position vectors of the bitmask
-    for a given config_number
+    Return a list of tuples of position vectors
+    If dimensions are not 2 or 3, raises an assertion error
     Parameters
     ----------
     config_number : int64
         integer less than 2 ** 26
+    dimensions: int
+        number of dimensions, can only be 2 or 3
     Returns
     -------
     list
@@ -57,21 +59,17 @@ def _get_position_vectors(config_number: int):
     config_number is a decimal number representation of 26 binary numbers
     around a voxel at the origin in a second ordered neighborhood
     """
+    config_number = np.int64(config_number)
     neighbor_values = [(config_number >> digit) & 0x01 for digit in range(26)]
-    return [neighbor_val * position_vec for neighbor_val, position_vec in zip(neighbor_values, POSITION_VECTORS)]
+    return [neighbor_value * position_vector for neighbor_value, position_vector in zip(neighbor_values, LIST_POSITION_VECTORS3D)]
 
 
-def set_adjacency_list(coordinate_bitmask_lists: list, arr_lower_limits: tuple, arr_upper_limits):
+def set_adjacency_list(arr):
     """
     Return dict
     Parameters
     ----------
-    coordinate_bitmask_lists : list
-        list of two element lists, [[nonzero_coordinate, bitmask_config_number], [..]]
-    arr_lower_limits: tuple
-        tuple representing the lower limits of the array in which the graph is located
-    arr_upper_limits: tuple
-        tuple representing the lower limits of the array in which the graph is located
+    arr
     Returns
     -------
     dict_of_indices_and_adjacent_coordinates: Dictionary
@@ -79,46 +77,24 @@ def set_adjacency_list(coordinate_bitmask_lists: list, arr_lower_limits: tuple, 
         is all the position of nonzero coordinates around it
         in it's second order neighborhood
     """
-    arr_lower_limits, arr_upper_limits
+    coordinate_bitmask_lists = set_bitmask_lists(arr)
     dict_of_indices_and_adjacent_coordinates = {}
     # list of unique nonzero tuples
-    for nonzero, config_number in coordinate_bitmask_lists:
-        adjacent_coordinate_list = [tuple(np.add(nonzero, position_vector))
+    for non_zero, config_number in coordinate_bitmask_lists:
+        adjacent_coordinate_list = [tuple(np.add(non_zero, position_vector))
                                     for position_vector in _get_position_vectors(config_number)
-                                    if position_vector != () and
-                                    tuple(np.add(nonzero, position_vector)) >= arr_lower_limits and
-                                    tuple(np.add(nonzero, position_vector)) < arr_upper_limits]
-        dict_of_indices_and_adjacent_coordinates[tuple(nonzero)] = adjacent_coordinate_list
+                                    if position_vector != ()]
+        dict_of_indices_and_adjacent_coordinates[tuple(non_zero)] = adjacent_coordinate_list
     return dict_of_indices_and_adjacent_coordinates
 
 
-def get_coord_bitmasks(arr: np.array,
-                       offset: list= [0, 0, 0]):
-    """
-    Return list of two element lists, nonzero_coordinate coordinate and second element is bitmask_config_number
-    All coordinates will be translated by the offset parameter, which defaults to no translation
-    Parameters
-    ----------
-    arr : np.array
-        3D boolean array
-    offset: list of 3 values, can be positive or negative
-        offset in voxel coordinates, this value is added to the coordinates of nonzero elements in `arr`,
-        default nothing is added
-    Returns
-    -------
-    coordinate_bitmask_lists : list
-        list of two element lists, [[nonzero_coordinate, bitmask_config_number], [..]]
-    """
+def set_bitmask_lists(arr):
+    dimensions = arr.ndim
+    assert dimensions == 3, "array dimensions must be 3, they are {}".format(dimensions)
     # convert the binary array to a configuration number array of same size by convolving with template
-    if arr.sum() == 0 or arr.sum() == arr.size:
-        return []
-    result = ndimage.convolve(np.uint64(arr), TEMPLATE, mode='constant')
-    nonzero_coordinates = image_tools.list_of_tuples_of_val(arr, 1)
-    coordinate_bitmask_lists = []
-    for nonzero in nonzero_coordinates:
-        coord_bitmask = [[int(posn + offset[i]) for i, posn in enumerate(nonzero)], int(result[nonzero])]
-        coordinate_bitmask_lists.append(coord_bitmask)
-    return coordinate_bitmask_lists
+    result = ndimage.convolve(np.uint64(arr), TEMPLATE_3D, mode='constant')
+    non_zero_coordinates = list(set(map(tuple, np.transpose(np.nonzero(arr)))))
+    return [[[int(posn) for posn in non_zero], int(result[non_zero])] for non_zero in non_zero_coordinates]
 
 
 def _get_cliques_of_size(networkx_graph, clique_size):
@@ -128,8 +104,6 @@ def _get_cliques_of_size(networkx_graph, clique_size):
     ----------
     networkx_graph : Networkx graph
         graph to obtain cliques from
-    clique_size : int
-        size = number of edges in the clique forming cycle
     Returns
     -------
         list
@@ -140,37 +114,39 @@ def _get_cliques_of_size(networkx_graph, clique_size):
     return [clique for clique in cliques if len(clique) == clique_size]
 
 
-def _reduce_clique(clique_edges, combination_edges, mth_clique, mth_clique_edge_length_list):
+def _reduce_clique(clique_edges: list, combination_edges: list,
+                   mth_clique: int, mth_clique_edge_length_list: list):
     """
-    a) the edge with maximum edge length in case of a right angled clique (1, 1, sqrt(2)) or (1, 2, sqrt())
+    the edge with maximum edge length in case of a right
+    angled clique (1, 1, sqrt(2)) or with distances (sqrt(2), sqrt(2), sqrt(2))
+    Note -- here squared distance is checked
     """
     for nth_edge_in_mth_clique, edge_length in enumerate(mth_clique_edge_length_list):
-        if edge_length == np.max(mth_clique_edge_length_list):
+        case_a_clique = (
+            edge_length == 2 and np.unique(mth_clique_edge_length_list).tolist() == [1, 2])
+        case_b_clique = edge_length == 2 and np.unique(mth_clique_edge_length_list).tolist() == [2]
+        if case_a_clique:
             clique_edges.append(combination_edges[mth_clique][nth_edge_in_mth_clique])
+        if case_b_clique:
+            clique_edges.append(combination_edges[mth_clique][nth_edge_in_mth_clique])
+            break
 
 
-def _remove_clique_edges(networkx_graph):
+def _remove_clique_edges(networkx_graph: nx.Graph):
     """
     Return 3 vertex clique removed networkx graph changed in place
-    Parameters
-    ----------
-    networkx_graph : Networkx graph
-        graph to remove cliques from
-    Returns
-    -------
-    networkx_graph: Networkx graph changed in place
-        graph with 3 vertex clique edges removed
+    :param networkx_graph: Networkx graph to remove cliques from
+    :return networkx_graph: Networkx graph changed in place
+            graph with 3 vertex clique edges removed
     Notes
     ------
     Returns networkx graph changed in place after removing 3 vertex cliques
-    Removes the longest edge in a 3 vertex cliques and
-    clique forming edge in special case edges with equal
-    lengths that form the 3 vertex clique.
-    Doesn't deal with any other cliques.
+    Raises AssertionErrorr if number of graphs after clique removal has changed
     """
     three_vertex_cliques = _get_cliques_of_size(networkx_graph, clique_size=3)
     combination_edges = [list(itertools.combinations(clique, 2)) for clique in three_vertex_cliques]
-    # clique_edge_lengths is a list of lists, where each list is the length of an edge in 3 vertex clique
+    # clique_edge_lengths is a list of lists, where each list is
+    # the length of an edge in 3 vertex clique
     clique_edge_lengths = []
     # different combination of edges are in combination_edges and their corresponding lengths are in
     # clique_edge_lengths
@@ -185,27 +161,23 @@ def _remove_clique_edges(networkx_graph):
     networkx_graph.remove_edges_from(clique_edges)
 
 
-def get_networkx_graph_from_array(coordinate_bitmask_lists: list, arr_lower_limits: tuple, arr_upper_limits: tuple):
+def get_networkx_graph_from_array(arr, arr_lower_limits=None, arr_upper_limits=None):
     """
-    Return a networkx graph, Raise an assertion error if any new non zero coordinates on skeleton
-    are introduced when the skeleton is converted to graph
+    Return a networkx graph
     Parameters
     ----------
-    coordinate_bitmask_lists : list
-        list of two element lists, [[nonzero_coordinate, bitmask_config_number], [..]]
-    arr_lower_limits: tuple
-        tuple representing the lower limits of the array in which the graph is located
-    arr_upper_limits: tuple
-        tuple representing the lower limits of the array in which the graph is located
+    :param arr: 3D skeleton array
+    :param arr_lower_limits: lower limits for array
+    :param arr_upper_limits: upper limits for array
     Returns
     -------
     networkx_graph : Networkx graph
         graphical representation of the input array after clique removal
-    Note
-    ----
-    arr_lower_limits and arr_upper_limits are used to contain the edges of the graph to be contained within a bounding box
     """
-    networkx_graph = nx.from_dict_of_lists(set_adjacency_list(coordinate_bitmask_lists, arr_lower_limits, arr_upper_limits))
+    if arr_lower_limits is None:
+        arr_lower_limits = (0, 0, 0)
+    if arr_upper_limits is None:
+        arr_upper_limits = arr.shape
+    networkx_graph = nx.from_dict_of_lists(set_adjacency_list(arr))
     _remove_clique_edges(networkx_graph)
-    assert networkx_graph.number_of_nodes() == len(coordinate_bitmask_lists)
     return networkx_graph

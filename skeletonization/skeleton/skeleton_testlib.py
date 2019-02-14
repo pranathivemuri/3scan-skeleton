@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.spatial import ConvexHull
 
-from skeletonization.skeleton.skeletonClass import Skeleton
+import skeletonization.skeleton.thinVolume as thinVolume
 
 
 def get_hilbert_curve():
@@ -32,8 +32,7 @@ def get_thinnedRandomBlob():
         mask = (xf * x) + (yf * y) + (zf * z) - c < 0
         blob[mask] = 0
     blob = blob.astype(bool)
-    skel = Skeleton(blob)
-    skel.setThinningOutput()
+    skel = thinVolume.get_thinned(blob)
     thinned_blob = skel.skeletonStack
     return thinned_blob
 
@@ -125,30 +124,23 @@ def get_single_voxel_line(size=(5, 5, 5)):
 def get_cycle_no_tree():
     # graph of a cycle
     donut = get_donut()
-    skel = Skeleton(donut)
-    skel.setNetworkGraph(True)
-    return skel.graph
+    skel = thinVolume.get_thinned(donut)
+    return skel
 
 
 def get_cycles_with_branches_protrude():
     # graph of a cycle with branches
     sampleImage = get_tiny_loop_with_branches()
-    skel = Skeleton(sampleImage)
-    skel.setNetworkGraph(False)
-    return skel.graph
+    return sampleImage
 
 
 def get_disjoint_trees_no_cycle_3d():
     # graph of two disjoint trees
     crosPair = get_disjoint_crosses()
-    skel = Skeleton(crosPair)
-    skel.setNetworkGraph(False)
-    return skel.graph
+    return crosPair
 
 
 def get_single_voxel_lineNobranches():
     # graph of no branches single line
     sampleLine = get_single_voxel_line()
-    skel = Skeleton(sampleLine)
-    skel.setNetworkGraph(False)
-    return skel.graph
+    return sampleLine

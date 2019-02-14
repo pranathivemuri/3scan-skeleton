@@ -3,7 +3,7 @@ import unittest
 
 import numpy as np
 
-import metrics.vessel_segment_stats as vessel_stats
+import skeletonization.metrics.vessel_segment_stats as vessel_stats
 
 
 # Straight line in three-space

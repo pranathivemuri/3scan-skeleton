@@ -78,7 +78,7 @@ def test_cy_convolve_harder():
     cylinder_skeleton = thinning.cy_convolve(cylinder_in_axis, kernel, points, 'reflect', 0)
     # after convolving the reference array
     # sum should be less than 2 ** 26 -1 (if all the 1st ordered neighborhood is 1)
-    nose.tools.assert_less_equal(cylinder_skeleton.skeleton.sum(), 2 ** 26 - 1)
+    nose.tools.assert_less_equal(cylinder_skeleton.sum(), 2 ** 26 - 1)
 
 
 def get_arr_from_coords(coords, shape):
@@ -113,7 +113,7 @@ def test_cy_get_thinned_cylinder():
         cylinder_in_axis = cylinder_in_axis / 255
         cylinder_skeleton = thinning.cy_get_thinned_3d(
             cylinder_in_axis.astype(np.uint64), 'reflect', 0)
-        nose.tools.assert_equal(cylinder_skeleton.skeleton.sum(), shape[axis], msg=axis)
+        nose.tools.assert_equal(cylinder_skeleton.sum(), shape[axis], msg=axis)
         nzc = image_tools.list_of_tuples_of_val(cylinder_skeleton, 1)
         prev_slope = np.subtract(nzc[0], nzc[1])
         for p1, p2 in zip(nzc[:-1], nzc[1:]):

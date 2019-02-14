@@ -1,9 +1,8 @@
 import nose.tools
 import unittest
 
-import metrics.skeleton_graph_stats as skeleton_stats
-import skeletonization.skeleton.networkx_graph_from_array as networkx_graph_from_array
-import metrics.testlib as graph_helpers
+import skeletonization.metrics.skeleton_graph_stats as skeleton_stats
+import skeletonization.metrics.testlib as graph_helpers
 
 # Straight line in three-space
 TEST_PATH_LINE = [(1, 4, 4), (1, 3, 4), (1, 2, 4), (1, 1, 4), (1, 0, 4)]
@@ -15,9 +14,7 @@ def _helper_skeleton_stats(arr, cutoff=None):
         cutoff = 0
     else:
         cutoff = cutoff
-    coordinate_bitmask_lists = networkx_graph_from_array.get_coord_bitmasks(arr)
-    zbox = networkx_graph_from_array.geometry.ZBox((0, 0, 0), arr.shape)
-    return skeleton_stats.SkeletonStats(coordinate_bitmask_lists, zbox, cutoff=cutoff)
+    return skeleton_stats.SkeletonStats(arr, cutoff=cutoff)
 
 
 def test_cutoff():
@@ -58,7 +55,12 @@ def assert_skeleton_stats(obtained_list, expected_segments, obj_lines, expected_
         for key in expected_keys:
             reduced_segments[key] += [segment[key]]
 
-    nose.tools.assert_dict_equal(expected_segments, reduced_segments)
+    for key, value in expected_segments.items():
+        if type(value) is list:
+            assert sorted(value) == sorted(reduced_segments[key])
+        else:
+            assert value == reduced_segments[key]
+
     nose.tools.assert_equal(obj_lines, expected_obj_lines)
 
 
@@ -194,31 +196,31 @@ class SkeletonStatsTestsCyclesGraph(unittest.TestCase):
         expected_obj_lines = [
             'v 1 2 1\n',
             'v 1 8 2\n',
-            'v 1 6 3\n',
+            'v 1 5 2\n',
             'v 1 5 3\n',
             'v 1 3 2\n',
             'v 1 7 2\n',
             'v 1 1 3\n',
-            'v 1 4 2\n',
-            'v 1 5 2\n',
+            'v 1 6 1\n',
+            'v 1 6 3\n',
             'v 1 3 1\n',
+            'v 1 5 1\n',
             'v 1 2 3\n',
             'v 1 7 1\n',
-            'v 1 7 3\n',
-            'v 1 5 1\n',
-            'v 1 6 1\n',
+            'v 1 0 2\n',
+            'v 1 4 2\n',
             'v 1 1 1\n',
             'v 1 1 2\n',
-            'v 1 0 2\n',
+            'v 1 7 3\n',
             'v 1 3 3\n',
-            'l 17 7 11 19 5\n',
-            'l 6 12 15 14 9\n',
+            'l 17 7 12 19 5\n',
+            'l 6 13 8 11 3\n',
             'l 6 2\n',
-            'l 17 18\n',
-            'l 9 8 5\n',
-            'l 9 4 3 13 6\n',
-            'l 5 10 1 16 17\n'
-        ]
+            'l 17 14\n',
+            'l 3 15 5\n',
+            'l 3 4 9 18 6\n',
+            'l 5 10 1 16 17\n']
+
         expected_segments = {
             'nodes': [5, 5, 2, 2, 3, 5, 5],
             'length': [4, 4, 1, 1, 2, 4, 4],

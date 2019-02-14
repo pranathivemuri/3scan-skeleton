@@ -4,7 +4,7 @@ from Cython.Distutils import build_ext
 
 import skeletonization.skeleton.io_tools
 
-path = skeletonization.skeleton.io_tools.module_relative_path('skeleton/thinning.pyx')
+path = skeletonization.skeleton.io_tools.module_relative_path('skeletonization/skeleton/thinning.pyx')
 ext_modules = [
     Extension('skeletonization.skeleton.thinning',
               [path],

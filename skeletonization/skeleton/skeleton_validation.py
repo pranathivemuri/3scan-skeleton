@@ -6,7 +6,6 @@ import scipy.ndimage
 
 import skeletonization.skeleton.thin_volume as thin_volume
 import skeletonization.metrics.skeleton_graph_stats as skeleton_stats
-import skeletonization.skeleton.networkx_graph_from_array as networkx_graph_from_array
 import skeletonization.skeleton.vessel_phantom as vessel_phantom
 import skeletonization.skeleton.phantom_noise as noise
 
@@ -15,6 +14,12 @@ CYLINDER_RADIUS = 5
 DECIMATION_FACTOR_Z = 5
 TARGET_NAMES = ["background", "foreground"]
 BASE_PATH = "/home/pranathi/pipeline_skeleton_results/sfn_phantoms_2017"
+
+# To validate use -
+# http://stim.ee.uh.edu/resources/software/netmets/
+# Github code - https://git.stim.ee.uh.edu/segmentation/netmets
+# Build guide - http://stim.ee.uh.edu/education/software-build-guide/
+# usage - netmets objfile1 objfile2 --sigma 3
 
 
 def draw_3d_line(x0, y0, z0, x1, y1, z1, array):
@@ -94,11 +99,7 @@ def draw_3d_line(x0, y0, z0, x1, y1, z1, array):
 
 def get_obj_write(skeletonized_arr, obj_path):
     # GET OBJS FILE TO RUN NETMETS
-    coord_bitmask_list = networkx_graph_from_array.get_coord_bitmasks(skeletonized_arr)
-    ss = skeleton_stats.SkeletonStats(
-        coord_bitmask_list,
-        arr_lower_limits=(0, 0, 0),
-        arr_upper_limits=(skeletonized_arr.shape))
+    ss = skeleton_stats.SkeletonStats(skeletonized_arr)
     metrics_results, obj_lines = ss.get_stats_general(ss.networkx_graph)
     obj_file = open(obj_path, "w")  # open a obj file in the given path
     obj_file.writelines(obj_lines)

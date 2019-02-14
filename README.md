@@ -1,6 +1,8 @@
 # 3D Image Skeletonization Tools
 
-This repository contains programs needed to obtain a 3D skeleton and quantify the skeletonized array to statistics with the help of function present in metrics.segmentStats.  
+A lot of these tools are written over 2015 - 2017 mostly when I was a part of 3Scan as an intern. Thanks to Matthew Goodman, Mike Pesavento, Jenny Folkesson, Ted Blackman, and Joanna Lipinski for their collaborations and ideas.
+
+This repository contains programs needed to obtain a 3D skeleton and quantify the skeletonized array to statistics.
 Input must be a binary array with z in its first dimension.  
 Skeletonization on a 3D binary array is performed by iteratively removing the boundary points until a line in the center is obtained by convolving the image with structuring elements from the [paper](https://drive.google.com/file/d/1kCEmfOx1mwoyggAfkYOsyRhOywfkiIU1/view?usp=sharing).  
 This function is implemented using [cython](http://docs.cython.org/src/reference/compilation.html) for fast execution and pyximport is used to automatically build and use the function
@@ -21,3 +23,11 @@ View the stack contours:
 ```mlab.contour3d(anynpynonbooleanarray)```  
 ```mlab.options.offscreen = True```  
 ```mlab.savefig("arrayName.png")```  
+
+To validate two networks use [NetMets](http://stim.ee.uh.edu/resources/software/netmets/) - Software wrote and maintained under UH STIM Lab by Dr.Mayerich, I wrote a part of it while I was pursuing my masters at UH.
+
+[Github code](https://git.stim.ee.uh.edu/segmentation/netmets)  
+[Build guide](http://stim.ee.uh.edu/education/software-build-guide/)  
+After installing NetMets, validate skeleton generated after converting into obj filing and comparing with ground truth using
+
+```netmets objfile1 objfile2 --sigma 3```
