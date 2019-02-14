@@ -1,7 +1,7 @@
 import numpy as np
 from scipy import ndimage
 
-from skeleton.skeletonClass import Skeleton
+from skeletonization.skeleton.skeletonClass import Skeleton
 
 """
 Program to test if pruned skeleton is as expected

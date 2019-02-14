@@ -4,9 +4,9 @@ import nose.tools
 import numpy as np
 import scipy.ndimage as ndimage
 
-import skeleton.skeleton_testlib as skeleton_testlib
-import skeleton.thinVolume as thin_volume
-import skeleton.image_tools as image_tools
+import skeletonization.skeleton.skeleton_testlib as skeleton_testlib
+import skeletonization.skeleton.thinVolume as thin_volume
+import skeletonization.skeleton.image_tools as image_tools
 
 """
 Tests for 3D thinning algorithms testing strictly with change in directions, axis

@@ -11,7 +11,7 @@ from scipy.misc import imsave, imread
 from scipy import ndimage
 from PIL import Image
 
-import skeleton.image_tools as image_tools
+import skeletonization.skeleton.image_tools as image_tools
 
 
 # Note: This disables the compression bomb warnings

@@ -3,7 +3,7 @@ import time
 
 import networkx as nx
 
-import skeleton.networkx_graph_from_array as networkx_graph_from_array
+import skeletonization.skeleton.networkx_graph_from_array as networkx_graph_from_array
 import metrics.vessel_segment_stats as vessel_stats
 
 """
@@ -43,10 +43,10 @@ class SkeletonStats:
     def __init__(
         self,
         coordinate_bitmask_lists: list,
-        voxel_size: tuple=(1, 1, 1),
-        cutoff: int=0,
         arr_lower_limits: tuple,
-        arr_upper_limits: tuple):
+        arr_upper_limits: tuple,
+        voxel_size: tuple=(1, 1, 1),
+        cutoff: int=0):
 
         networkx_graph = networkx_graph_from_array.get_networkx_graph_from_array(
             coordinate_bitmask_lists,

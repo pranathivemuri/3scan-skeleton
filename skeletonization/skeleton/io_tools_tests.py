@@ -3,7 +3,7 @@ import os
 import nose.tools
 import numpy as np
 
-import skeleton.io_tools as io_tools
+import skeletonization.skeleton.io_tools as io_tools
 from tempfile import TemporaryDirectory
 
 

@@ -1,7 +1,7 @@
 from scipy import ndimage
 import numpy as np
 
-from skeleton.skeletonClass import Skeleton
+from skeletonization.skeleton.skeletonClass import Skeleton
 from skeleton import skeleton_testlib
 
 

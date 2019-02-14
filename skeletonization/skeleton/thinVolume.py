@@ -4,7 +4,7 @@ import numpy as np
 from skimage.morphology import skeletonize
 # NOTE This does the pyx compilation of this extension
 import pyximport; pyximport.install() # NOQA
-import skeleton.thinning as thinning
+import skeletonization.skeleton.thinning as thinning
 
 """
 Thinning algorithm as described in

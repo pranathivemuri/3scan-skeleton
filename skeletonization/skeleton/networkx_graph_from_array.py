@@ -4,7 +4,7 @@ import numpy as np
 import networkx as nx
 from scipy import ndimage
 
-import skeleton.image_tools as image_tools
+import skeletonization.skeleton.image_tools as image_tools
 
 """
 program to look up adjacent elements and calculate degree

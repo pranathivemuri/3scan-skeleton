@@ -1,7 +1,7 @@
 import nose.tools
 import numpy as np
 
-import skeleton.phantom.noise as phantom_noise
+import skeletonization.skeleton.phantom.noise as phantom_noise
 
 
 def test_scale_binarymask_update():

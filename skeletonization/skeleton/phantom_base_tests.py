@@ -1,7 +1,7 @@
 import nose.tools
 import numpy as np
 
-import skeleton.phantom_base as phantom_base
+import skeletonization.skeleton.phantom_base as phantom_base
 
 
 def test_normalized_L2():

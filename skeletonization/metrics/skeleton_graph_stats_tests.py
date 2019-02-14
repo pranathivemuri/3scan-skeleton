@@ -2,7 +2,7 @@ import nose.tools
 import unittest
 
 import metrics.skeleton_graph_stats as skeleton_stats
-import skeleton.networkx_graph_from_array as networkx_graph_from_array
+import skeletonization.skeleton.networkx_graph_from_array as networkx_graph_from_array
 import metrics.testlib as graph_helpers
 
 # Straight line in three-space

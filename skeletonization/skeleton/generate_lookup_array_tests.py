@@ -1,6 +1,6 @@
 import nose.tools
 
-import skeleton.generate_lookup_array as generate_lookup
+import skeletonization.skeleton.generate_lookup_array as generate_lookup
 
 
 def _helper_template_working(arr, template, equate_to=0):

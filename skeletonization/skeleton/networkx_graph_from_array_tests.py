@@ -3,7 +3,7 @@ import numpy as np
 import networkx as nx
 from skimage.morphology import skeletonize
 
-from skeleton.networkx_graph_from_array import get_networkx_graph_from_array
+from skeletonization.skeleton.networkx_graph_from_array import get_networkx_graph_from_array
 
 
 def _helper_networkx_graph(sample_image, expected_edges, expected_disjoint_graphs):

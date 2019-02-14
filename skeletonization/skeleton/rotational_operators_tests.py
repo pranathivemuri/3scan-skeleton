@@ -1,7 +1,7 @@
 import nose.tools
 import numpy as np
 
-import skeleton.rotational_operators as ops
+import skeletonization.skeleton.rotational_operators as ops
 
 RAND_ARR = np.array([[[0, 0, 0], [0, 0, 0], [0, 0, 0]],
                     [[0, 0, 0], [0, 1, 0], [0, 0, 0]],

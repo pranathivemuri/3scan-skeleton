@@ -3,8 +3,8 @@ import time
 import numpy as np
 cimport cython
 
-import skeleton.rotational_operators as rotational_operators
-import skeleton.image_tools as image_tools
+import skeletonization.skeleton.rotational_operators as rotational_operators
+import skeletonization.skeleton.image_tools as image_tools
 """
 cython convolve to speed up thinning
 """

@@ -3,8 +3,9 @@ import shutil
 import tempfile
 
 from runscripts.objWrite import getObjBranchPointsWrite, getObjPointsWrite
-from skeleton.skeleton_testlib import (get_cycles_with_branches_protrude, get_single_voxel_lineNobranches,
-                                       get_cycle_no_tree, get_disjoint_trees_no_cycle_3d)
+from skeletonization.skeleton.skeleton_testlib import (
+    get_cycles_with_branches_protrude, get_single_voxel_lineNobranches,
+    get_cycle_no_tree, get_disjoint_trees_no_cycle_3d)
 
 
 """

@@ -2,7 +2,7 @@ import nose.tools
 import numpy as np
 import scipy.ndimage as ndimage
 
-import skeleton.vessel_phantom as vessel_phantom
+import skeletonization.skeleton.vessel_phantom as vessel_phantom
 
 
 def test_volume_bool_to_dtype():

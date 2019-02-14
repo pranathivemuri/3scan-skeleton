@@ -5,7 +5,7 @@ from tempfile import TemporaryDirectory
 from sphinx import cmdline
 from sphinx.ext.apidoc import main as apidoc_main
 
-import skeleton.io_tools
+import skeletonization.skeleton.io_tools
 
 
 def build_api_docs(input_path: str, output_path: str, ignore="*_tests.py"):
@@ -18,8 +18,8 @@ def build_api_docs(input_path: str, output_path: str, ignore="*_tests.py"):
     :param output_path: Folder to output .rst files to.
     :param ignore: Ignore files pattern.
     """
-    skeleton.io_tools.assert_directory_exists(input_path)
-    skeleton.io_tools.force_directory(output_path)
+    skeletonization.skeleton.io_tools.assert_directory_exists(input_path)
+    skeletonization.skeleton.io_tools.force_directory(output_path)
 
     apidoc_main(["-f", "-o", output_path, input_path, ignore])
 

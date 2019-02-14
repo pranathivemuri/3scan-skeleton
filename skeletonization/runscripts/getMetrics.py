@@ -1,6 +1,6 @@
 import pickle
 
-from skeleton.skeletonClass import Skeleton
+from skeletonization.skeleton.skeletonClass import Skeleton
 
 """
 Program to run and save statistics after pruning

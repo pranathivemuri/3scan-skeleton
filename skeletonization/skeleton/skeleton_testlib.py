@@ -1,7 +1,7 @@
 import numpy as np
 from scipy.spatial import ConvexHull
 
-from skeleton.skeletonClass import Skeleton
+from skeletonization.skeleton.skeletonClass import Skeleton
 
 
 def get_hilbert_curve():

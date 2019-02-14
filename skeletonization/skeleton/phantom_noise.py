@@ -1,7 +1,7 @@
 import numbers
 import numpy as np
 
-import skeleton.image_tools as image_tools
+import skeletonization.skeleton.image_tools as image_tools
 
 
 def realistic_filter(

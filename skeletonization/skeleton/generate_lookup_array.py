@@ -2,7 +2,7 @@ import functools
 
 import numpy as np
 
-from skeleton.rotational_operators import get_directions_list
+from skeletonization.skeleton.rotational_operators import get_directions_list
 
 """
 Following is an application of memoization - pre-generating a look up array.

@@ -4,11 +4,11 @@ import numpy as np
 import skimage.morphology
 import scipy.ndimage
 
-import skeleton.thin_volume as thin_volume
-import metrics.skeleton_graph_stats as skeleton_stats
-import skeleton.networkx_graph_from_array as networkx_graph_from_array
-import skeleton.vessel_phantom as vessel_phantom
-import skeleton.phantom_noise as noise
+import skeletonization.skeleton.thin_volume as thin_volume
+import skeletonization.metrics.skeleton_graph_stats as skeleton_stats
+import skeletonization.skeleton.networkx_graph_from_array as networkx_graph_from_array
+import skeletonization.skeleton.vessel_phantom as vessel_phantom
+import skeletonization.skeleton.phantom_noise as noise
 
 CUBE_EDGE = 256
 CYLINDER_RADIUS = 5
