@@ -205,7 +205,7 @@ class SkeletonStatsTestsCyclesGraph(unittest.TestCase):
             'branch_points': 4,
             'cycles': 2,
         }
-        assert_skeleton_stats(obtained_list, expected_segments, obj_lines, [1] * 17)
+        assert_skeleton_stats(obtained_list, expected_segments, obj_lines, [0] * 26)
 
     def test_undirected_graph_stats_multiple_cycles_graph(self):
         # Graph with 2 cycles and branches from the cycles

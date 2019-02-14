@@ -1,5 +1,3 @@
-import os
-
 # -*- coding: utf-8 -*-
 #
 # Configuration file for the Sphinx documentation builder.
@@ -28,7 +26,6 @@ extensions = [
     'sphinx.ext.mathjax',
     'sphinx.ext.ifconfig',
     'sphinx.ext.viewcode',
-    'sphinxcontrib.plantuml'
 ]
 source_parsers = {
     '.md': 'recommonmark.parser.CommonMarkParser',
@@ -42,7 +39,6 @@ master_doc = 'index'
 language = None
 exclude_patterns = []
 pygments_style = 'sphinx'
-plantuml = 'java -jar %s' % os.path.abspath("plantuml.jar")
 
 
 # -- Options for HTML output -------------------------------------------------
