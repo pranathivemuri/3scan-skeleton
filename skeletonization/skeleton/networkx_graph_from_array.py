@@ -28,6 +28,7 @@ TEMPLATE_3D = np.array([[[33554432, 16777216, 8388608], [4194304, 2097152, 10485
                         [[65536, 32768, 16384], [8192, 0, 4096], [2048, 1024, 512]],
                         [[256, 128, 64], [32, 16, 8], [4, 2, 1]]], dtype=np.uint64)
 
+TEMPLATE_2D = np.array([[2 ** 0, 2 ** 1, 2 ** 2], [2 ** 3, 0, 2 ** 4], [2 ** 5, 2 ** 6, 2 ** 7]])
 
 # permutations of (-1, 0, 1) in three/two dimensional tuple format
 # representing 8 and 26 increments around a pixel at origin (0, 0, 0)
@@ -35,8 +36,11 @@ TEMPLATE_3D = np.array([[[33554432, 16777216, 8388608], [4194304, 2097152, 10485
 LIST_POSITION_VECTORS3D = list(itertools.product((-1, 0, 1), repeat=3))
 LIST_POSITION_VECTORS3D.remove((0, 0, 0))
 
+LIST_POSITION_VECTORS2D = list(itertools.product((-1, 0, 1), repeat=2))
+LIST_POSITION_VECTORS2D.remove((0, 0))
 
-def _get_position_vectors(config_number):
+
+def _get_position_vectors(config_number, dimensions):
     """
     Return a list of tuples of position vectors
     If dimensions are not 2 or 3, raises an assertion error
@@ -60,8 +64,13 @@ def _get_position_vectors(config_number):
     around a voxel at the origin in a second ordered neighborhood
     """
     config_number = np.int64(config_number)
-    neighbor_values = [(config_number >> digit) & 0x01 for digit in range(26)]
-    return [neighbor_value * position_vector for neighbor_value, position_vector in zip(neighbor_values, LIST_POSITION_VECTORS3D)]
+    if dimensions == 3:
+        neighbor_values = [(config_number >> digit) & 0x01 for digit in range(26)]
+        position_vectors = LIST_POSITION_VECTORS3D
+    elif dimensions == 2:
+        neighbor_values = [(config_number >> digit) & 0x01 for digit in range(8)]
+        position_vectors = LIST_POSITION_VECTORS2D
+    return [neighbor_value * position_vector for neighbor_value, position_vector in zip(neighbor_values, position_vectors)]
 
 
 def set_adjacency_list(arr):
@@ -90,9 +99,11 @@ def set_adjacency_list(arr):
 
 def set_bitmask_lists(arr):
     dimensions = arr.ndim
-    assert dimensions == 3, "array dimensions must be 3, they are {}".format(dimensions)
     # convert the binary array to a configuration number array of same size by convolving with template
-    result = ndimage.convolve(np.uint64(arr), TEMPLATE_3D, mode='constant')
+    if dimensions == 3:
+        result = ndimage.convolve(np.uint64(arr), TEMPLATE_3D, mode='constant')
+    elif dimensions == 2:
+        result = ndimage.convolve(np.uint64(arr), TEMPLATE_2D, mode='constant')
     non_zero_coordinates = list(set(map(tuple, np.transpose(np.nonzero(arr)))))
     return [[[int(posn) for posn in non_zero], int(result[non_zero])] for non_zero in non_zero_coordinates]
 
@@ -174,10 +185,14 @@ def get_networkx_graph_from_array(arr, arr_lower_limits=None, arr_upper_limits=N
     networkx_graph : Networkx graph
         graphical representation of the input array after clique removal
     """
+    shape = arr.shape
     if arr_lower_limits is None:
-        arr_lower_limits = (0, 0, 0)
+        if len(shape) == 3:
+            arr_lower_limits = (0, 0, 0)
+        elif len(shape) == 2:
+            arr_lower_limits = (0, 0)
     if arr_upper_limits is None:
-        arr_upper_limits = arr.shape
+        arr_upper_limits = shape
     networkx_graph = nx.from_dict_of_lists(set_adjacency_list(arr))
     _remove_clique_edges(networkx_graph)
     return networkx_graph

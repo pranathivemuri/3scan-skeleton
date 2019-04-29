@@ -39,12 +39,18 @@ class SkeletonStats:
         v followed by x, y, z coordinates
         l followed by indexes to the nodes that form the segment path
     """
-    def __init__(self, arr, arr_lower_limits=None, arr_upper_limits=None, voxel_size: tuple=(1, 1, 1), cutoff: int=0):
+    def __init__(self, arr, arr_lower_limits=None, arr_upper_limits=None, voxel_size=None, cutoff: int=0):
 
         networkx_graph = networkx_graph_from_array.get_networkx_graph_from_array(
             arr,
             arr_lower_limits,
             arr_upper_limits)
+
+        dimensions = len(arr.shape)
+        if dimensions == 2:
+            voxel_size = (1, 1)
+        elif dimensions == 3:
+            voxel_size = (1, 1, 1)
 
         self.networkx_graph = nx.Graph(networkx_graph)
         self.vox_dim = voxel_size

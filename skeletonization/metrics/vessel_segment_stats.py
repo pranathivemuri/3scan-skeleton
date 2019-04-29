@@ -11,7 +11,7 @@ class VesselSegment:
 
     :param voxel_size - param representing a tuple of the voxel size in x, y, and z
     """
-    def __init__(self, path: list, voxel_size: tuple=(1, 1, 1)):
+    def __init__(self, path: list, voxel_size):
         self.path = path
         self.voxel_size = voxel_size
 
