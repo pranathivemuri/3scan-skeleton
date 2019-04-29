@@ -29,7 +29,7 @@ def test_single_voxel_line():
 def test_get_position_vectors():
     expected_cases = [[1, 0], [1, 0], [2**25, 25]]
     for input_args, result in expected_cases:
-        nose.tools.assert_true(networkx_graph_from_array._get_position_vectors(input_args)[result])
+        nose.tools.assert_true(networkx_graph_from_array._get_position_vectors(input_args, 3)[result])
 
 
 def test_get_cliques_of_size():

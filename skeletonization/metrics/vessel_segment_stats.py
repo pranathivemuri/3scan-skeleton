@@ -11,8 +11,14 @@ class VesselSegment:
 
     :param voxel_size - param representing a tuple of the voxel size in x, y, and z
     """
-    def __init__(self, path: list, voxel_size):
+    def __init__(self, path: list, voxel_size: tuple=None):
         self.path = path
+        if voxel_size is None:
+            dimensions = len(path[0])
+            if dimensions == 3:
+                voxel_size = (1, 1, 1)
+            elif dimensions == 2:
+                voxel_size = (1, 1)
         self.voxel_size = voxel_size
 
     def _dist_between_nodes(self, node1, node2):

@@ -91,7 +91,7 @@ def set_adjacency_list(arr):
     # list of unique nonzero tuples
     for non_zero, config_number in coordinate_bitmask_lists:
         adjacent_coordinate_list = [tuple(np.add(non_zero, position_vector))
-                                    for position_vector in _get_position_vectors(config_number)
+                                    for position_vector in _get_position_vectors(config_number, arr.ndim)
                                     if position_vector != ()]
         dict_of_indices_and_adjacent_coordinates[tuple(non_zero)] = adjacent_coordinate_list
     return dict_of_indices_and_adjacent_coordinates
