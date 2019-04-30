@@ -116,8 +116,7 @@ class SkeletonStats:
 
         :return a list of stats dict and obj_line representing the path
         """
-        start_node, end_node = [node for node in graph.nodes_iter() if
-                                graph.degree([node])[node] == 1]
+        start_node, end_node = [node for node in graph.nodes() if graph.degree[node] == 1]
 
         path = nx.shortest_path(graph, source=start_node, target=end_node)
         self._remove_edges_visited_path(graph, path)
@@ -255,8 +254,8 @@ class SkeletonStats:
 
     def _branch_and_end_nodes(self, graph: nx.Graph):
         # Find branch and end nodes of the graph
-        branch_nodes = [node for node in graph.nodes_iter() if graph.degree([node])[node] > 2]
-        end_nodes = [node for node in graph.nodes_iter() if graph.degree([node])[node] == 1]
+        branch_nodes = [node for node in graph.nodes() if graph.degree[node] > 2]
+        end_nodes = [node for node in graph.nodes() if graph.degree[node] == 1]
         return branch_nodes, end_nodes
 
     def get_stats_general(self, graph: nx.Graph):
@@ -288,7 +287,7 @@ class SkeletonStats:
         # v followed by x, y, x coordinates in the obj file
         #  for each of the sorted nodes
         obj_lines = []
-        for index, node in enumerate(graph.nodes_iter()):
+        for index, node in enumerate(graph.nodes()):
             # a obj_node_index_map to transform the nodes (x, y, z) to indexes (beginining with 1)
             obj_node_index_map[node] = index + 1
             # add strings of nodes to obj file
@@ -301,7 +300,7 @@ class SkeletonStats:
             print("subgraph contains {} nodes".format(num_nodes))
             # Properties of this subgraph
             iter_time = time.time()
-            unique_degrees = set(nx.degree(skeleton_subgraph).values())
+            unique_degrees = set([degree_item[1] for degree_item in nx.degree(skeleton_subgraph)])
             cycles = nx.cycle_basis(skeleton_subgraph)
             # Single node
             if len(skeleton_subgraph.nodes()) <= 1:

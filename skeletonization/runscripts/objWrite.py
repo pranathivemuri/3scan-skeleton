@@ -66,8 +66,8 @@ def getObjBranchPointsWrite(networkxGraph, pathTosave):
     Expects aspect ratio of array to be pre-adjusted
     """
     objFile = open(pathTosave, "w")  # open a obj file in the given path
-    nodeDegreedict = nx.degree(networkxGraph)
-    branchpoints = [k for (k, v) in nodeDegreedict.items() if v != 2 and v != 1]
+    nodeDegreeTuple = nx.degree(networkxGraph)
+    branchpoints = [k for (k, v) in nodeDegreeTuple if v != 2 and v != 1]
     #  for each of the sorted vertices
     strsVertices = []
     for index, vertex in enumerate(branchpoints):
