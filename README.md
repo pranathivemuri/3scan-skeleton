@@ -24,10 +24,10 @@ View the stack contours:
 ```mlab.options.offscreen = True```  
 ```mlab.savefig("arrayName.png")```  
 
-To validate two networks use [NetMets](http://stim.ee.uh.edu/resources/software/netmets/) - Software wrote and maintained under UH STIM Lab by Dr.Mayerich, I wrote a part of it while I was pursuing my masters at UH.
+To validate two networks after conversion of skeleton stack into obj files use [NetMets](http://stim.ee.uh.edu/resources/software/netmets/) - Software wrote and maintained under UH STIM Lab by Dr.Mayerich, I wrote a part of it while I was pursuing my masters at UH.
 
 [Github code](https://git.stim.ee.uh.edu/segmentation/netmets)  
 [Build guide](http://stim.ee.uh.edu/education/software-build-guide/)  
-After installing NetMets, validate skeleton generated after converting into obj filing and comparing with ground truth using
+After installing NetMets, validate skeleton against groundtruth
 
 ```netmets objfile1 objfile2 --sigma 3```
